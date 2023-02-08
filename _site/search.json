@@ -12,5 +12,166 @@
     "title": "About",
     "section": "",
     "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.html",
+    "href": "Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.html",
+    "title": "Hands-on Exercise 3: 1st Order Spatial Point Patterns Analysis Methods",
+    "section": "",
+    "text": "Spatial Point Pattern Analysis is the evaluation of the pattern or distribution, of a set of points on a surface. The point can be location of:\nevents such as crime, traffic accident and disease onset, or business services (coffee and fastfood outlets) or facilities such as childcare and eldercare. Using appropriate functions of spatstat, this hands-on exercise aims to discover the spatial point processes of childecare centres in Singapore.\nThe specific questions we would like to answer are as follows:\nare the childcare centres in Singapore randomly distributed throughout the country? if the answer is not, then the next logical question is where are the locations with higher concentration of childcare centres?"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.html#the-data",
+    "href": "Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.html#the-data",
+    "title": "Hands-on Exercise 3: 1st Order Spatial Point Patterns Analysis Methods",
+    "section": "3.2 The Data",
+    "text": "3.2 The Data\nTo provide answers to the questions above, three data sets will be used. They are:\nCHILDCARE, a point feature data providing both location and attribute information of childcare centres. It was downloaded from Data.gov.sg and is in geojson format.\nMP14_SUBZONE_WEB_PL, a polygon feature data providing information of URA 2014 Master Plan Planning Subzone boundary data. It is in ESRI shapefile format. This data set was also downloaded from Data.gov.sg.\nCostalOutline, a polygon feature data showing the national boundary of Singapore. It is provided by SLA and is in ESRI shapefile format."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.html#installing-and-loading-the-r-packages",
+    "href": "Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.html#installing-and-loading-the-r-packages",
+    "title": "Hands-on Exercise 3: 1st Order Spatial Point Patterns Analysis Methods",
+    "section": "3.3 Installing and Loading the R packages",
+    "text": "3.3 Installing and Loading the R packages\nThere are 5 R packages used: - sf - spatstat - raster - maptools - tmap\n\npacman::p_load(maptools, sf, raster, spatstat, tmap)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.html#spatial-data-wrangling",
+    "href": "Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.html#spatial-data-wrangling",
+    "title": "Hands-on Exercise 3: 1st Order Spatial Point Patterns Analysis Methods",
+    "section": "3.4 Spatial Data Wrangling",
+    "text": "3.4 Spatial Data Wrangling"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html",
+    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html",
+    "title": "Hands-on Exercise 2: Choropleth Mapping with R",
+    "section": "",
+    "text": "Choropleth mapping involves the symbolisation of enumeration units, such as countries, provinces, states, counties or census units, using area patterns or graduated colors. For example, a social scientist may need to use a choropleth map to portray the spatial distribution of aged population of Singapore by Master Plan 2014 Subzone Boundary.\nIn this chapter, you will learn how to plot functional and truthful choropleth maps by using an R package called tmap package."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#survival-tip",
+    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#survival-tip",
+    "title": "Hands-on Exercise 2: Choropleth Mapping with R",
+    "section": "2.1.1 Survival Tip",
+    "text": "2.1.1 Survival Tip\nIt is advisable for you to read the functional description of each function before using them."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#getting-started",
+    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#getting-started",
+    "title": "Hands-on Exercise 2: Choropleth Mapping with R",
+    "section": "2.2 Getting Started",
+    "text": "2.2 Getting Started\nIn this hands-on exercise, the key R package use is tmap package in R. Beside tmap package, four other R packages will be used. They are:\n\nreadr for importing delimited text file,\ntidyr for tidying data,\ndplyr for wrangling data and\nsf for handling geospatial data.\n\nAmong the four packages, readr, tidyr and dplyr are part of tidyverse package.\nThe code chunk below will be used to install and load these packages in RStudio.\n\npacman::p_load(sf, tmap, tidyverse)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#importing-data",
+    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#importing-data",
+    "title": "Hands-on Exercise 2: Choropleth Mapping with R",
+    "section": "2.3 Importing Data",
+    "text": "2.3 Importing Data"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#the-data",
+    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#the-data",
+    "title": "Hands-on Exercise 2: Choropleth Mapping with R",
+    "section": "2.3.1 The Data",
+    "text": "2.3.1 The Data\nTwo data set will be used to create the choropleth map. They are:\n\nMaster Plan 2014 Subzone Boundary (Web) (i.e. MP14_SUBZONE_WEB_PL) in ESRI shapefile format. It can be downloaded at data.gov.sg This is a geospatial data. It consists of the geographical boundary of Singapore at the planning subzone level. The data is based on URA Master Plan 2014.\nSingapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2011-2020 in csv format (i.e. respopagesextod2011to2020.csv). This is an aspatial data fie. It can be downloaded at Department of Statistics, Singapore Although it does not contain any coordinates values, but it’s PA and SZ fields can be used as unique identifiers to geocode to MP14_SUBZONE_WEB_PL shapefile."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#importing-geospatial-data-into-r",
+    "href": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html#importing-geospatial-data-into-r",
+    "title": "Hands-on Exercise 2: Choropleth Mapping with R",
+    "section": "2.3.2 Importing Geospatial Data into R",
+    "text": "2.3.2 Importing Geospatial Data into R\nThe code chunk below uses the st_read() function of sf package to import MP14_SUBZONE_WEB_PL shapefile into R as a simple feature data frame called mpsz.\n\nmpsz <- st_read(dsn = \"chap02/data/geospatial\", \n                layer = \"MP14_SUBZONE_WEB_PL\")\n\nReading layer `MP14_SUBZONE_WEB_PL' from data source \n  `/Users/yashica/Desktop/xtc0/IS415-GAA/Hands-on_Ex/Hands-on_Ex02/chap02/data/geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 323 features and 15 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\nProjected CRS: SVY21\n\n\n\nmpsz\n\nSimple feature collection with 323 features and 15 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\nProjected CRS: SVY21\nFirst 10 features:\n   OBJECTID SUBZONE_NO       SUBZONE_N SUBZONE_C CA_IND      PLN_AREA_N\n1         1          1    MARINA SOUTH    MSSZ01      Y    MARINA SOUTH\n2         2          1    PEARL'S HILL    OTSZ01      Y          OUTRAM\n3         3          3       BOAT QUAY    SRSZ03      Y SINGAPORE RIVER\n4         4          8  HENDERSON HILL    BMSZ08      N     BUKIT MERAH\n5         5          3         REDHILL    BMSZ03      N     BUKIT MERAH\n6         6          7  ALEXANDRA HILL    BMSZ07      N     BUKIT MERAH\n7         7          9   BUKIT HO SWEE    BMSZ09      N     BUKIT MERAH\n8         8          2     CLARKE QUAY    SRSZ02      Y SINGAPORE RIVER\n9         9         13 PASIR PANJANG 1    QTSZ13      N      QUEENSTOWN\n10       10          7       QUEENSWAY    QTSZ07      N      QUEENSTOWN\n   PLN_AREA_C       REGION_N REGION_C          INC_CRC FMEL_UPD_D   X_ADDR\n1          MS CENTRAL REGION       CR 5ED7EB253F99252E 2014-12-05 31595.84\n2          OT CENTRAL REGION       CR 8C7149B9EB32EEFC 2014-12-05 28679.06\n3          SR CENTRAL REGION       CR C35FEFF02B13E0E5 2014-12-05 29654.96\n4          BM CENTRAL REGION       CR 3775D82C5DDBEFBD 2014-12-05 26782.83\n5          BM CENTRAL REGION       CR 85D9ABEF0A40678F 2014-12-05 26201.96\n6          BM CENTRAL REGION       CR 9D286521EF5E3B59 2014-12-05 25358.82\n7          BM CENTRAL REGION       CR 7839A8577144EFE2 2014-12-05 27680.06\n8          SR CENTRAL REGION       CR 48661DC0FBA09F7A 2014-12-05 29253.21\n9          QT CENTRAL REGION       CR 1F721290C421BFAB 2014-12-05 22077.34\n10         QT CENTRAL REGION       CR 3580D2AFFBEE914C 2014-12-05 24168.31\n     Y_ADDR SHAPE_Leng SHAPE_Area                       geometry\n1  29220.19   5267.381  1630379.3 MULTIPOLYGON (((31495.56 30...\n2  29782.05   3506.107   559816.2 MULTIPOLYGON (((29092.28 30...\n3  29974.66   1740.926   160807.5 MULTIPOLYGON (((29932.33 29...\n4  29933.77   3313.625   595428.9 MULTIPOLYGON (((27131.28 30...\n5  30005.70   2825.594   387429.4 MULTIPOLYGON (((26451.03 30...\n6  29991.38   4428.913  1030378.8 MULTIPOLYGON (((25899.7 297...\n7  30230.86   3275.312   551732.0 MULTIPOLYGON (((27746.95 30...\n8  30222.86   2208.619   290184.7 MULTIPOLYGON (((29351.26 29...\n9  29893.78   6571.323  1084792.3 MULTIPOLYGON (((20996.49 30...\n10 30104.18   3454.239   631644.3 MULTIPOLYGON (((24472.11 29..."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html",
+    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html",
+    "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R! 🥳",
+    "section": "",
+    "text": "In this section, I will install and load tidyverse and sf packages.\n\npacman::p_load(tidyverse, sf)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#importing-a-polygon-feature-data-in-shapefile-format",
+    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#importing-a-polygon-feature-data-in-shapefile-format",
+    "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R! 🥳",
+    "section": "1.2.1 Importing a polygon feature data in shapefile format",
+    "text": "1.2.1 Importing a polygon feature data in shapefile format\nMP14_SUBZONE_WEB_PL is a polygon feature layer in ESRI shapefile format.\n\nmpsz <- st_read(dsn = \"data/geospatial\",\n             layer = \"MP14_SUBZONE_WEB_PL\")\n\nReading layer `MP14_SUBZONE_WEB_PL' from data source \n  `/Users/yashica/Desktop/xtc0/IS415-GAA/Hands-on_Ex/Hands-on_Ex01/data/geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 323 features and 15 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\nProjected CRS: SVY21"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#importing-a-polyline-feature-data-in-shapefile-format",
+    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#importing-a-polyline-feature-data-in-shapefile-format",
+    "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R! 🥳",
+    "section": "1.2.2 Importing a polyline feature data in shapefile format",
+    "text": "1.2.2 Importing a polyline feature data in shapefile format\n\ncyclingpath = st_read(dsn = \"data/geospatial\", \n                         layer = \"CyclingPathGazette\")\n\nReading layer `CyclingPathGazette' from data source \n  `/Users/yashica/Desktop/xtc0/IS415-GAA/Hands-on_Ex/Hands-on_Ex01/data/geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 2248 features and 2 fields\nGeometry type: MULTILINESTRING\nDimension:     XY\nBounding box:  xmin: 11854.32 ymin: 28347.98 xmax: 42626.09 ymax: 48948.15\nProjected CRS: SVY21"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#importing-gis-data-in-kml-format",
+    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#importing-gis-data-in-kml-format",
+    "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R! 🥳",
+    "section": "1.2.3 Importing GIS data in kml format",
+    "text": "1.2.3 Importing GIS data in kml format\n\npreschool = st_read(\"data/geospatial/sportsg-dus-sport-facilities-kml.kml\")\n\nReading layer `SPORTSG_DUS_SPORT_FACILITIES' from data source \n  `/Users/yashica/Desktop/xtc0/IS415-GAA/Hands-on_Ex/Hands-on_Ex01/data/geospatial/sportsg-dus-sport-facilities-kml.kml' \n  using driver `KML'\nSimple feature collection with 183 features and 2 fields\nGeometry type: POINT\nDimension:     XYZ\nBounding box:  xmin: 103.6872 ymin: 1.274962 xmax: 103.9628 ymax: 1.456667\nz_range:       zmin: 0 zmax: 0\nGeodetic CRS:  WGS 84"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#working-with-st_geometry",
+    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#working-with-st_geometry",
+    "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R! 🥳",
+    "section": "1.3.1 Working with st_geometry()",
+    "text": "1.3.1 Working with st_geometry()\n\nst_geometry(mpsz)\n\nGeometry set for 323 features \nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\nProjected CRS: SVY21\nFirst 5 geometries:"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#working-with-glimpse",
+    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#working-with-glimpse",
+    "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R! 🥳",
+    "section": "1.3.2 Working with glimpse()",
+    "text": "1.3.2 Working with glimpse()\n\nglimpse(mpsz)\n\nRows: 323\nColumns: 16\n$ OBJECTID   <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, …\n$ SUBZONE_NO <int> 1, 1, 3, 8, 3, 7, 9, 2, 13, 7, 12, 6, 1, 5, 1, 1, 3, 2, 2, …\n$ SUBZONE_N  <chr> \"MARINA SOUTH\", \"PEARL'S HILL\", \"BOAT QUAY\", \"HENDERSON HIL…\n$ SUBZONE_C  <chr> \"MSSZ01\", \"OTSZ01\", \"SRSZ03\", \"BMSZ08\", \"BMSZ03\", \"BMSZ07\",…\n$ CA_IND     <chr> \"Y\", \"Y\", \"Y\", \"N\", \"N\", \"N\", \"N\", \"Y\", \"N\", \"N\", \"N\", \"N\",…\n$ PLN_AREA_N <chr> \"MARINA SOUTH\", \"OUTRAM\", \"SINGAPORE RIVER\", \"BUKIT MERAH\",…\n$ PLN_AREA_C <chr> \"MS\", \"OT\", \"SR\", \"BM\", \"BM\", \"BM\", \"BM\", \"SR\", \"QT\", \"QT\",…\n$ REGION_N   <chr> \"CENTRAL REGION\", \"CENTRAL REGION\", \"CENTRAL REGION\", \"CENT…\n$ REGION_C   <chr> \"CR\", \"CR\", \"CR\", \"CR\", \"CR\", \"CR\", \"CR\", \"CR\", \"CR\", \"CR\",…\n$ INC_CRC    <chr> \"5ED7EB253F99252E\", \"8C7149B9EB32EEFC\", \"C35FEFF02B13E0E5\",…\n$ FMEL_UPD_D <date> 2014-12-05, 2014-12-05, 2014-12-05, 2014-12-05, 2014-12-05…\n$ X_ADDR     <dbl> 31595.84, 28679.06, 29654.96, 26782.83, 26201.96, 25358.82,…\n$ Y_ADDR     <dbl> 29220.19, 29782.05, 29974.66, 29933.77, 30005.70, 29991.38,…\n$ SHAPE_Leng <dbl> 5267.381, 3506.107, 1740.926, 3313.625, 2825.594, 4428.913,…\n$ SHAPE_Area <dbl> 1630379.27, 559816.25, 160807.50, 595428.89, 387429.44, 103…\n$ geometry   <MULTIPOLYGON [m]> MULTIPOLYGON (((31495.56 30..., MULTIPOLYGON (…"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#working-with-head",
+    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#working-with-head",
+    "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R! 🥳",
+    "section": "1.3.3 Working with head()",
+    "text": "1.3.3 Working with head()\n\nhead(mpsz, n=5) \n\nSimple feature collection with 5 features and 15 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 25867.68 ymin: 28369.47 xmax: 32362.39 ymax: 30435.54\nProjected CRS: SVY21\n  OBJECTID SUBZONE_NO      SUBZONE_N SUBZONE_C CA_IND      PLN_AREA_N\n1        1          1   MARINA SOUTH    MSSZ01      Y    MARINA SOUTH\n2        2          1   PEARL'S HILL    OTSZ01      Y          OUTRAM\n3        3          3      BOAT QUAY    SRSZ03      Y SINGAPORE RIVER\n4        4          8 HENDERSON HILL    BMSZ08      N     BUKIT MERAH\n5        5          3        REDHILL    BMSZ03      N     BUKIT MERAH\n  PLN_AREA_C       REGION_N REGION_C          INC_CRC FMEL_UPD_D   X_ADDR\n1         MS CENTRAL REGION       CR 5ED7EB253F99252E 2014-12-05 31595.84\n2         OT CENTRAL REGION       CR 8C7149B9EB32EEFC 2014-12-05 28679.06\n3         SR CENTRAL REGION       CR C35FEFF02B13E0E5 2014-12-05 29654.96\n4         BM CENTRAL REGION       CR 3775D82C5DDBEFBD 2014-12-05 26782.83\n5         BM CENTRAL REGION       CR 85D9ABEF0A40678F 2014-12-05 26201.96\n    Y_ADDR SHAPE_Leng SHAPE_Area                       geometry\n1 29220.19   5267.381  1630379.3 MULTIPOLYGON (((31495.56 30...\n2 29782.05   3506.107   559816.2 MULTIPOLYGON (((29092.28 30...\n3 29974.66   1740.926   160807.5 MULTIPOLYGON (((29932.33 29...\n4 29933.77   3313.625   595428.9 MULTIPOLYGON (((27131.28 30...\n5 30005.70   2825.594   387429.4 MULTIPOLYGON (((26451.03 30..."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#assigning-epsg-code-to-a-simple-feature-data-frame",
+    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#assigning-epsg-code-to-a-simple-feature-data-frame",
+    "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R! 🥳",
+    "section": "1.5.1 Assigning EPSG code to a simple feature data frame",
+    "text": "1.5.1 Assigning EPSG code to a simple feature data frame\n\nst_crs(mpsz)\n\nCoordinate Reference System:\n  User input: SVY21 \n  wkt:\nPROJCRS[\"SVY21\",\n    BASEGEOGCRS[\"SVY21[WGS84]\",\n        DATUM[\"World Geodetic System 1984\",\n            ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n                LENGTHUNIT[\"metre\",1]],\n            ID[\"EPSG\",6326]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"Degree\",0.0174532925199433]]],\n    CONVERSION[\"unnamed\",\n        METHOD[\"Transverse Mercator\",\n            ID[\"EPSG\",9807]],\n        PARAMETER[\"Latitude of natural origin\",1.36666666666667,\n            ANGLEUNIT[\"Degree\",0.0174532925199433],\n            ID[\"EPSG\",8801]],\n        PARAMETER[\"Longitude of natural origin\",103.833333333333,\n            ANGLEUNIT[\"Degree\",0.0174532925199433],\n            ID[\"EPSG\",8802]],\n        PARAMETER[\"Scale factor at natural origin\",1,\n            SCALEUNIT[\"unity\",1],\n            ID[\"EPSG\",8805]],\n        PARAMETER[\"False easting\",28001.642,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8806]],\n        PARAMETER[\"False northing\",38744.572,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8807]]],\n    CS[Cartesian,2],\n        AXIS[\"(E)\",east,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1,\n                ID[\"EPSG\",9001]]],\n        AXIS[\"(N)\",north,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1,\n                ID[\"EPSG\",9001]]]]\n\n\nUsing this function, we see that the ESPG code indicated is incorrect. For “SVY21” it should be 3414 but it’s showing 9001.\n\nmpsz3414 <- st_set_crs(mpsz, 3414)\n\nTo assign the correct EPSG (European Petroleum Survey Group) code to mpsz data frame, st_set_crs() of sf package is used as shown in the code chunk above.\n\nst_crs(mpsz3414)\n\nCoordinate Reference System:\n  User input: EPSG:3414 \n  wkt:\nPROJCRS[\"SVY21 / Singapore TM\",\n    BASEGEOGCRS[\"SVY21\",\n        DATUM[\"SVY21\",\n            ELLIPSOID[\"WGS 84\",6378137,298.257223563,\n                LENGTHUNIT[\"metre\",1]]],\n        PRIMEM[\"Greenwich\",0,\n            ANGLEUNIT[\"degree\",0.0174532925199433]],\n        ID[\"EPSG\",4757]],\n    CONVERSION[\"Singapore Transverse Mercator\",\n        METHOD[\"Transverse Mercator\",\n            ID[\"EPSG\",9807]],\n        PARAMETER[\"Latitude of natural origin\",1.36666666666667,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8801]],\n        PARAMETER[\"Longitude of natural origin\",103.833333333333,\n            ANGLEUNIT[\"degree\",0.0174532925199433],\n            ID[\"EPSG\",8802]],\n        PARAMETER[\"Scale factor at natural origin\",1,\n            SCALEUNIT[\"unity\",1],\n            ID[\"EPSG\",8805]],\n        PARAMETER[\"False easting\",28001.642,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8806]],\n        PARAMETER[\"False northing\",38744.572,\n            LENGTHUNIT[\"metre\",1],\n            ID[\"EPSG\",8807]]],\n    CS[Cartesian,2],\n        AXIS[\"northing (N)\",north,\n            ORDER[1],\n            LENGTHUNIT[\"metre\",1]],\n        AXIS[\"easting (E)\",east,\n            ORDER[2],\n            LENGTHUNIT[\"metre\",1]],\n    USAGE[\n        SCOPE[\"Cadastre, engineering survey, topographic mapping.\"],\n        AREA[\"Singapore - onshore and offshore.\"],\n        BBOX[1.13,103.59,1.47,104.07]],\n    ID[\"EPSG\",3414]]"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#transforming-the-projection-of-preschool-from-wgs84-to-svy21",
+    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#transforming-the-projection-of-preschool-from-wgs84-to-svy21",
+    "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R! 🥳",
+    "section": "1.5.2 Transforming the projection of preschool from wgs84 to svy21",
+    "text": "1.5.2 Transforming the projection of preschool from wgs84 to svy21\n\nst_geometry(preschool)\n\nGeometry set for 183 features \nGeometry type: POINT\nDimension:     XYZ\nBounding box:  xmin: 103.6872 ymin: 1.274962 xmax: 103.9628 ymax: 1.456667\nz_range:       zmin: 0 zmax: 0\nGeodetic CRS:  WGS 84\nFirst 5 geometries:\n\n\nWe can see that the preschool data is in wgs84 coordinate system. Geographic coordinate system is not appropriate if the analysis need to use distance or/and area measurements.\nTime to reproject {r}preschool from one coordinate system to another.\n\npreschool3414 <- st_transform(preschool, \n                              crs = 3414)\n\nLet’s display the content of preschool3414 sf data frame as shown below.\n\nst_geometry(preschool3414)\n\nGeometry set for 183 features \nGeometry type: POINT\nDimension:     XYZ\nBounding box:  xmin: 11739.27 ymin: 28604.3 xmax: 42410.51 ymax: 48696.35\nz_range:       zmin: 0 zmax: 0\nProjected CRS: SVY21 / Singapore TM\nFirst 5 geometries:\n\n\nYAYY we have successfully converted preschool to preschool3414 (from wgs84 geographic coordinate system to svy21 projected coordinate system - suitable for distance-related measurements).\nNotice that it is in svy21 projected coordinate system now. Furthermore, if you refer to Bounding box:, the values are greater than 0-360 range of decimal degree commonly used by most of the geographic coordinate systems."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#importing-the-aspatial-data",
+    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#importing-the-aspatial-data",
+    "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R! 🥳",
+    "section": "1.6.1 Importing the Aspatial Data",
+    "text": "1.6.1 Importing the Aspatial Data\n\nlistings <- read_csv(\"data/aspatial/listings.csv\")\n\n\nlist(listings) \n\n[[1]]\n# A tibble: 4,161 × 18\n       id name     host_id host_…¹ neigh…² neigh…³ latit…⁴ longi…⁵ room_…⁶ price\n    <dbl> <chr>      <dbl> <chr>   <chr>   <chr>     <dbl>   <dbl> <chr>   <dbl>\n 1  50646 Pleasan…  227796 Sujatha Centra… Bukit …    1.33    104. Privat…    80\n 2  71609 Ensuite…  367042 Belinda East R… Tampin…    1.35    104. Privat…   145\n 3  71896 B&B  Ro…  367042 Belinda East R… Tampin…    1.35    104. Privat…    85\n 4  71903 Room 2-…  367042 Belinda East R… Tampin…    1.35    104. Privat…    85\n 5 275344 15 mins… 1439258 Kay     Centra… Bukit …    1.29    104. Privat…    49\n 6 289234 Booking…  367042 Belinda East R… Tampin…    1.34    104. Privat…   184\n 7 294281 5 mins … 1521514 Elizab… Centra… Newton     1.31    104. Privat…    79\n 8 324945 Cozy Bl… 1439258 Kay     Centra… Bukit …    1.29    104. Privat…    49\n 9 330089 Cozy Bl… 1439258 Kay     Centra… Bukit …    1.29    104. Privat…    55\n10 330095 10 mins… 1439258 Kay     Centra… Bukit …    1.29    104. Privat…    55\n# … with 4,151 more rows, 8 more variables: minimum_nights <dbl>,\n#   number_of_reviews <dbl>, last_review <date>, reviews_per_month <dbl>,\n#   calculated_host_listings_count <dbl>, availability_365 <dbl>,\n#   number_of_reviews_ltm <dbl>, license <chr>, and abbreviated variable names\n#   ¹​host_name, ²​neighbourhood_group, ³​neighbourhood, ⁴​latitude, ⁵​longitude,\n#   ⁶​room_type\n\n\nThe code chunk above shows list() of Base R instead of glimpse() is used to do the job.\nThe output reveals that there are 4161 rows and 18 columns.\nTwo useful fields we are going to use in the next phase are latitude and longitude. Note that they are in decimal degree format. As a best guess, we will assume that the data is in wgs84 Geographic Coordinate System."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#creating-a-simple-feature-data-frame-from-an-aspatial-data-frame",
+    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#creating-a-simple-feature-data-frame-from-an-aspatial-data-frame",
+    "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R! 🥳",
+    "section": "1.6.2 Creating a simple feature data frame from an aspatial data frame",
+    "text": "1.6.2 Creating a simple feature data frame from an aspatial data frame\n\nlistings_sf <- st_as_sf(listings, \n                       coords = c(\"longitude\", \"latitude\"),\n                       crs=4326) %>%\n  st_transform(crs = 3414)\n\nThe code chunk above converts listing data frame into a simple feature data frame by using st_as_sf() of sf packages.\nThings to learn from the arguments above:\n\ncoords argument requires you to provide the column name of the x-coordinates first then followed by the column name of the y-coordinates.\ncrs argument requires you to provide the coordinates system in epsg format. EPSG: 4326 is wgs84 Geographic Coordinate System and EPSG: 3414 is Singapore SVY21 Projected Coordinate System. You can search for other country’s epsg code by referring to epsg.io.\n%>% is used to nest st_transform() to transform the newly created simple feature data frame into svy21 projected coordinates system.\n\n\nglimpse(listings_sf)\n\nRows: 4,161\nColumns: 17\n$ id                             <dbl> 50646, 71609, 71896, 71903, 275344, 289…\n$ name                           <chr> \"Pleasant Room along Bukit Timah\", \"Ens…\n$ host_id                        <dbl> 227796, 367042, 367042, 367042, 1439258…\n$ host_name                      <chr> \"Sujatha\", \"Belinda\", \"Belinda\", \"Belin…\n$ neighbourhood_group            <chr> \"Central Region\", \"East Region\", \"East …\n$ neighbourhood                  <chr> \"Bukit Timah\", \"Tampines\", \"Tampines\", …\n$ room_type                      <chr> \"Private room\", \"Private room\", \"Privat…\n$ price                          <dbl> 80, 145, 85, 85, 49, 184, 79, 49, 55, 5…\n$ minimum_nights                 <dbl> 92, 92, 92, 92, 60, 92, 92, 60, 60, 60,…\n$ number_of_reviews              <dbl> 18, 20, 24, 47, 14, 12, 133, 17, 12, 3,…\n$ last_review                    <date> 2014-12-26, 2020-01-17, 2019-10-13, 20…\n$ reviews_per_month              <dbl> 0.18, 0.15, 0.18, 0.34, 0.11, 0.10, 1.0…\n$ calculated_host_listings_count <dbl> 1, 6, 6, 6, 44, 6, 7, 44, 44, 44, 6, 7,…\n$ availability_365               <dbl> 365, 340, 265, 365, 296, 285, 365, 181,…\n$ number_of_reviews_ltm          <dbl> 0, 0, 0, 0, 1, 0, 0, 3, 2, 0, 1, 0, 0, …\n$ license                        <chr> NA, NA, NA, NA, \"S0399\", NA, NA, \"S0399…\n$ geometry                       <POINT [m]> POINT (22646.02 35167.9), POINT (…"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#buffering",
+    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#buffering",
+    "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R! 🥳",
+    "section": "1.9.1 Buffering",
+    "text": "1.9.1 Buffering\nThe authority is planning to upgrade the exiting cycling path. To do so, they need to acquire 5 metres of reserved land on the both sides of the current cycling path. You are tasked to determine the extend of the land need to be acquired and their total area.\n\nbuffer_cycling <- st_buffer(cyclingpath, \n                               dist=5, nQuadSegs = 30)\n\nst_buffer() of sf package is used to compute the 5-meter buffers around cycling paths.\n\nbuffer_cycling$AREA <- st_area(buffer_cycling)\n\n\nsum(buffer_cycling$AREA)\n\n1556978 [m^2]"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#point-in-polygon-count",
+    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#point-in-polygon-count",
+    "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R! 🥳",
+    "section": "1.9.2 Point-in-polygon count",
+    "text": "1.9.2 Point-in-polygon count\nA pre-school service group want to find out the numbers of pre-schools in each Planning Subzone.\n\nmpsz3414$`PreSch Count`<- lengths(st_intersects(mpsz3414, preschool3414))\n\nThe code chunk above performs two operations at one go. Firstly, identify pre-schools located inside each Planning Subzone by using st_intersects(). Next, length() of Base R is used to calculate numbers of pre-schools that fall inside each planning subzone.\n\nsummary(mpsz3414$`PreSch Count`)\n\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n 0.0000  0.0000  0.0000  0.5666  1.0000  7.0000 \n\n\n\ntop_n(mpsz3414, 1, `PreSch Count`)\n\nSimple feature collection with 2 features and 16 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 39655.33 ymin: 35966 xmax: 42940.57 ymax: 39726.28\nProjected CRS: SVY21 / Singapore TM\n  OBJECTID SUBZONE_NO       SUBZONE_N SUBZONE_C CA_IND PLN_AREA_N PLN_AREA_C\n1      189          2   TAMPINES EAST    TMSZ02      N   TAMPINES         TM\n2      246          5 PASIR RIS DRIVE    PRSZ05      N  PASIR RIS         PR\n     REGION_N REGION_C          INC_CRC FMEL_UPD_D   X_ADDR   Y_ADDR SHAPE_Leng\n1 EAST REGION       ER 21658EAAF84F4D8D 2014-12-05 41122.55 37392.39   10180.62\n2 EAST REGION       ER 2B73597AF3F174F3 2014-12-05 42032.46 38988.22    5311.06\n  SHAPE_Area                       geometry PreSch Count\n1    4339824 MULTIPOLYGON (((42196.76 38...            7\n2    1639669 MULTIPOLYGON (((42832.87 38...            7\n\n\nTo list the planning subzone with the most number of pre-school, the top_n() of dplyr package is used as shown in the code chunk above.\n\nmpsz3414$Area <- mpsz3414 %>%\n  st_area()\n\n\nmpsz3414 <- mpsz3414 %>%\n  mutate(`PreSch Density` = `PreSch Count`/Area * 1000000)"
   }
 ]

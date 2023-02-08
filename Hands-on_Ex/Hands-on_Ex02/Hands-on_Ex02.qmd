@@ -1,0 +1,56 @@
+---
+title: "Hands-on Exercise 2: Choropleth Mapping with R"
+execute:
+  warning: false
+date: "`r Sys.Date()`"
+---
+
+## 2.1 Overview
+
+Choropleth mapping involves the symbolisation of enumeration units, such as countries, provinces, states, counties or census units, using area patterns or graduated colors. For example, a social scientist may need to use a choropleth map to portray the spatial distribution of aged population of Singapore by Master Plan 2014 Subzone Boundary.
+
+In this chapter, you will learn how to plot functional and truthful choropleth maps by using an R package called **tmap** package.
+
+## 2.1.1 Survival Tip
+
+It is advisable for you to read the functional description of each function before using them.
+
+## 2.2 Getting Started
+
+In this hands-on exercise, the key R package use is tmap package in R. Beside tmap package, four other R packages will be used. They are:
+
+-   readr for importing delimited text file,
+-   tidyr for tidying data,
+-   dplyr for wrangling data and
+-   sf for handling geospatial data.
+
+Among the four packages, readr, tidyr and dplyr are part of tidyverse package.
+
+The code chunk below will be used to install and load these packages in RStudio.
+
+```{r}
+pacman::p_load(sf, tmap, tidyverse)
+```
+
+## 2.3 Importing Data
+
+## 2.3.1 The Data
+
+Two data set will be used to create the choropleth map. They are:
+
+-   Master Plan 2014 Subzone Boundary (Web) (i.e. MP14_SUBZONE_WEB_PL) in ESRI shapefile format. It can be downloaded at data.gov.sg This is a geospatial data. It consists of the geographical boundary of Singapore at the planning subzone level. The data is based on URA Master Plan 2014.
+
+-   Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2011-2020 in csv format (i.e. respopagesextod2011to2020.csv). This is an aspatial data fie. It can be downloaded at Department of Statistics, Singapore Although it does not contain any coordinates values, but it's PA and SZ fields can be used as unique identifiers to geocode to MP14_SUBZONE_WEB_PL shapefile.
+
+## 2.3.2 Importing Geospatial Data into R
+
+The code chunk below uses the st_read() function of sf package to import MP14_SUBZONE_WEB_PL shapefile into R as a simple feature data frame called mpsz.
+
+```{r}
+mpsz <- st_read(dsn = "chap02/data/geospatial", 
+                layer = "MP14_SUBZONE_WEB_PL")
+```
+
+```{r}
+mpsz
+```
