@@ -1,0 +1,249 @@
+---
+title: "In-class Exercise 2: Geospatial Data Wrangling! 🌝"
+execute:
+  warning: false
+date: "`r Sys.Date()`"
+---
+
+## Setting the Scene
+
+Water is an important resource to mankind. Clean and accessible water is critical to human health. It provides a healthy environment, a sustainable economy, reduces poverty and ensures peace and security. Yet over 40% of the global population does not have access to sufficient clean water. By 2025, 1.8 billion people will be living in countries or regions with absolute water scarcity, according to UN-Water. The lack of water poses a major threat to several sectors, including food security. Agriculture uses about 70% of the world's accessible freshwater.
+
+Developing countries are most affected by water shortages and poor water quality. Up to 80% of illnesses in the developing world are linked to inadequate water and sanitation. Despite technological advancement, providing clean water to the rural community is still a major development issues in many countries globally, especially countries in the Africa continent.
+
+To address the issue of providing clean and sustainable water supply to the rural community, a global [Water Point Data Exchange (WPdx)](https://www.waterpointdata.org/about/) project has been initiated. The main aim of this initiative is to collect water point related data from rural areas at the water point or small water scheme level and share the data via WPdx Data Repository, a cloud-based data library. What is so special of this project is that data are collected based on [WPDx Data Standard](https://www.waterpointdata.org/wp-content/uploads/2021/04/WPDx_Data_Standard.pdf).
+
+## Objectives
+
+Geospatial analytics hold tremendous potential to address complex problems facing society. In this study, you are tasked to apply appropriate geospatial data wrangling methods to prepare the data for water point mapping study. For the purpose of this study, Nigeria will be used as the study country.
+
+## The Data
+
+### Aspatial Data
+
+For the purpose of this assignment, data from [WPdx Global Data Repositories](https://www.waterpointdata.org/access-data/) will be used. There are two versions of the data. They are: WPdx-Basic and WPdx+. You are required to use WPdx+ data set.
+
+### Geospatial data
+
+Nigeria Level-2 Administrative Boundary (also known as Local Government Area) polygon features GIS data will be used in this take-home exercise. The data can be downloaded either from The [Humanitarian Data Exchange](https://data.humdata.org/) portal or [geoBoundaries](https://www.geoboundaries.org/).
+
+## The Task
+
+The specific tasks of this take-home exercise are as follows:
+
+-   Using appropriate sf method, import the shapefile into R and save it in a simple feature data frame format. Note that there are three Projected Coordinate Systems of Nigeria, they are: EPSG: 26391, 26392, and 26303. You can use any one of them.
+
+-   Using appropriate tidyr and dplyr methods, derive the proportion of functional and non-functional water point at LGA level.
+
+-   Combining the geospatial and aspatial data frame into simple feature data frame.
+
+-   Visualising the distribution of water point by using appropriate analytical visualisation methods.
+
+## Getting Started
+
+For the purpose of this in-class exercise, three R packages will be used. They are: sf, tidyverse and funModeling.
+
+```{r}
+pacman::p_load(sf, tidyverse, funModeling)
+```
+
+## Importing Geospatial
+
+The geoBoundaries data set
+
+```{r}
+geoNGA <- st_read("data/geospatial/",
+                  layer = "geoBoundaries-NGA-ADM2") %>%
+  st_transform(crs = 26392)
+```
+
+The NGA data set
+
+```{r}
+NGA <- st_read("data/geospatial/",
+               layer = "nga_admbnda_adm2_osgof_20190417") %>%
+  st_transform(crs = 26392)
+```
+
+## Importing Aspatial Data
+
+```{r}
+wp_nga <- read_csv("data/aspatial/WPdx.csv") %>%
+  filter(`#clean_country_name` == "Nigeria")
+```
+
+Write the extracted data into rds format
+
+## Converting Aspatial Data into Geospatial
+
+```{r}
+wp_nga$Geometry = st_as_sfc(wp_nga$`New Georeferenced Column`)
+wp_nga
+```
+
+```{r}
+wp_sf <- st_sf(wp_nga, crs=4326)
+wp_sf
+```
+
+```{r}
+wp_sf <- wp_sf %>%
+  st_transform(crs = 26392)
+```
+
+Yashica's notes
+
+Whenever you work with aspatial data, must turn it into geospatial data. 1) Have to convert to correct data type + 2) the original coordinate system first (before converting to the coordinate system u want)
+
+# 4.1 Excluding Redundant Fields
+
+Use select
+
+```{r}
+NGA <- NGA %>%
+  select(c(3:4, 8:9))
+```
+
+# 4.2 Checking for duplicate name
+
+Using duplicated()
+
+```{r}
+NGA$ADM2_EN[duplicated(NGA$ADM2_EN) == TRUE]
+```
+
+# 4.3
+
+```{r}
+NGA$ADM2_EN[94] <- "Bassa, Kogi"
+NGA$ADM2_EN[95] <- "Bassa, Plateau"
+NGA$ADM2_EN[304] <- "Ifelodun, Kwara"
+NGA$ADM2_EN[305] <- "Ifelodun, Osun"
+NGA$ADM2_EN[355] <- "Irepodun, Kwara"
+NGA$ADM2_EN[356] <- "Irepodun, Osun"
+NGA$ADM2_EN[519] <- "Nasarawa, Kano"
+NGA$ADM2_EN[519] <- "Nasarawa, Nasarawa"
+NGA$ADM2_EN[546] <- "Ob1, Benue"
+NGA$ADM2_EN[547] <- "Ob1, Nasarawa"
+NGA$ADM2_EN[693] <- "Surulere, Lagos"
+NGA$ADM2_EN[694] <- "Surulere, Oyo"
+```
+
+# 4.4 Rename NA to become "unknown"
+
+```{r}
+wp_sf_nga <- wp_sf %>%
+  rename(status_clean = '#status_clean') %>%
+  select(status_clean) %>%
+  mutate(status_clean = replace_na(
+    status_clean, "unknown"
+  ))
+```
+
+# 5 Extracting Water Point Data
+
+Now, we're ready to extract the water point acc to their status. The code chunk is used to extract functional water point
+
+```{r}
+wp_sf_nga <- wp_sf %>%
+  rename(status_clean = '#status_clean') %>%
+  select(status_clean) %>%
+  mutate(status_clean = replace_na(
+    status_clean, "unknown"
+  ))
+```
+
+Note: You have missed out the code chunk to extract functional water points.
+
+```{r}
+wp_functional <- wp_sf_nga %>%
+  filter(status_clean %in%
+           c("Functional",
+             "Functional but not in use",
+             "Functional but needs repair"))
+```
+
+The code chunk below is used to extract nonfunctional water point.
+
+```{r}
+wp_nonfunctional <- wp_sf_nga %>%
+  filter(status_clean %in%
+           c("Abandoned/Decommissioned",
+             "Abandoned",
+             "Non-Functional due to dry season",
+             "Non-Functional",
+             "Non functional due to dry season"))
+
+```
+
+Extract unknown
+
+```{r}
+wp_unknown <- wp_sf_nga %>%
+  filter(status_clean == "unknown")
+
+```
+
+First, it identifies the functional water points in each LGA by using st intersects () of sf package. Next, length () is used to calculate the number of functional water points that fall inside each LGA.
+
+```{r}
+NGA_WD <- NGA %>%
+  mutate(`total_wp`= lengths(
+    st_intersects(NGA, wp_sf_nga))) %>%
+  mutate(wp_functional = lengths(
+    st_intersects(NGA, wp_functional))) %>% 
+  mutate(wp_nonfunctional = lengths(
+    st_intersects(NGA, wp_nonfunctional))) %>%
+  mutate(`wp_unknown` = lengths(
+    st_intersects(NGA, wp_unknown)))
+```
+
+Note: You need to write the output into a rds file. THen, copy to In-class Exercise 3
+
+```{r}
+write_rds(NGA_WD, "data/rds/NGA_wp.rds")
+```
+
+Note: remember to delete all the code chunk below.
+
+```{r}
+
+## Projection Transformation
+
+#| eval: false
+wp_sf <- wp_sf %>%
+  st_transform(crs = 26392)
+```
+
+```{r}
+#| eval: false
+write_rds(wp_sf, "data/rds/wp_sf.rds")
+```
+
+```{r}
+#| eval: false
+st_geometry(wp_sf)
+```
+
+The code above confirms that wp_sf has indeed been successfully transformed from geographic coordinate system to projected coordinate system. (Bounding box values \> 360 & "Projected CRS"). Now, wp_sf is ready for further aggregations.
+
+## Task: Using appropriate tidyr and dplyr methods, derive the proportion of functional and non-functional water point at LGA level.
+
+There are 3 basic geometric primitives - points, lines and polygons.
+
+functional/total non-functional/total
+
+```{r}
+#| eval: false
+geoNGAint<- lengths(st_intersects(geoNGA, wp_sf))
+```
+
+```{r}
+#| eval: false
+geoNGAint<- lengths(st_intersects("Functional", wp_sf["status_clean"]))
+```
+
+```{r}
+#| eval: false
+summary(geoNGAint)
+```

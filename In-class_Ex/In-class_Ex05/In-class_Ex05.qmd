@@ -1,0 +1,79 @@
+---
+title: "In-class_Ex05"
+author: "Yashica"
+date: "6 February 2023"
+date-modified: " `r Sys.Date()` "
+execute: 
+  eval: true
+  echo: true
+  warning: false
+editor: visual
+---
+
+# Importing Data
+
+```{r}
+pacman::p_load(tidyverse, sf, sfdep, tmap)
+```
+
+```{r}
+studyArea <- st_read(dsn = "data", layer="study_area") %>% st_transform(crs = 3829)
+```
+
+```{r}
+stores <- st_read(dsn = "data", layer="stores") %>% st_transform(crs = 3829)
+```
+
+# Visualising the sf layers
+
+```{r}
+tmap_mode("view")
+tm_shape(studyArea) + 
+  tm_polygons() + 
+tm_shape(stores) + 
+  tm_dots(col = "Name",
+          size = 0.01,
+          border.col = "black",
+          border.lwd = 0.5) + 
+  tm_view(set.zoom.limits = c(12,16))
+```
+
+# Local Colocation Quotients (LCLQ)
+
+```{r}
+nb <- include_self(
+  st_knn(st_geometry(stores), 6)
+) #choose 6 and include yourself so total is 7. In the end, you'll get 3 and 4 so no even split which is good
+
+wt <- st_kernel_weights(nb,
+                        stores,
+                        "gaussian",
+                        adaptive = TRUE)
+
+FamilyMart <- stores %>%
+  filter(Name == "Family Mart") #select out all the stores with the name "Family Mart as dataframe
+A <- FamilyMart$Name
+
+SevenEleven <- stores %>%
+  filter(Name == "7-Eleven")
+B <- SevenEleven$Name
+
+LCLQ <- local_colocation(A, B, nb, wt, 49)
+#now all the parameter values you have
+#A is target
+#B is the neighbour i want to find if A is colocated with it
+
+LCLQ_stores <- cbind(stores, LCLQ)
+#doing a combination: LCLQ is appended over to stores. Cannot do a relational join coz these 2 layers have no unique identifier (only 1,2,3,4...)
+
+#LHS should be store coz we want the geometry. Will always inherit the property of the first value.
+
+tmap_mode("view")
+
+```
+
+Pls make sure to check the number of events. Should be 1409.
+
+In in-class exercise 5, we saw the graph and now we're learning how to deal with colocation.
+
+Colocation quotient and pvalue - please find yourself.
