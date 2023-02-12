@@ -28,21 +28,21 @@ Geospatial analytics hold tremendous potential to address complex problems facin
 
 ## 2.1 Packages Used
 
--   sf
+-   sf --> a relatively new R package specially designed to import, manage and process vector-based geospatial data in R.
 
--   tidyverse
+-   tidyverse --> used for wrangling and visualisations
 
--   funModelling
+-   funModelling --> for EDA and visualisations
 
--   spatstat
+-   spatstat --> has a wide range of useful functions for point pattern analysis.   Used to perform 1st- and 2nd-order spatial point patterns analysis and derive kernel density estimation (KDE) layer.
 
--   raster
+-   raster --> reads, writes, manipulates, analyses and model of gridded spatial data (i.e. raster)
 
--   tmap
+-   tmap --> provides functions for plotting cartographic quality static point patterns maps or interactive maps by using leaflet API.
 
--   maptools
+-   maptools --> provides a set of tools for manipulating geographic data. To convert Spatial objects into ppp format of spatstat.
 
--   sfdep
+-   sfdep --> simple feature spatial dependence
 
 # 3.0 Importing Data
 
@@ -787,6 +787,8 @@ B parameter is the neighbour we want to know if A is co-located with and if so, 
 B <- wp_nonfunctional$status_clean
 ```
 
+Now, we'll put all the parameters into the local_colocation function. 
+
 ```{r}
 LCLQ <- local_colocation(A, B, nb, wt, 49)
 ```
@@ -837,10 +839,7 @@ We can see that non-functional water points aren't as prevalent as functional wa
 
 There are stronger signs of colocation between functional and non-functional waterpoints towards the leftmost and rightmost regions of Osun State. However for the majority of Osun State, the functional water points have no colocation with non-functional water points. 
 
-Moreover, there are not many regions on the map that shows a low p-value (smaller than 0.05). As such, at 95% confidence level, there's not sufficient evidence to reject the null hypothesis which states that the spatial distribution of functional and non-functional waterpoints in Osun State, Nigeria are independent from each other.
+Moreover, there are NOT many regions on the map that shows a low p-value (smaller than 0.05). As such, at 95% confidence level, there's not sufficient evidence to reject the null hypothesis which states that the spatial distribution of functional and non-functional waterpoints in Osun State, Nigeria are independent from each other.
 
 We continue to conclude that the spatial distribution of functional and non-functional waterpoints in Osun State, Nigeria are independent from each other.
 
-# 13 References
-
-Prof Kam's resources, class materials and references! :)
