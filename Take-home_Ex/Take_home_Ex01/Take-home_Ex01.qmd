@@ -1,5 +1,6 @@
 ---
 title: "Take-home Exercise 1"
+author: "Yashica"
 date: "30 January 2023"
 date-modified: " `r Sys.Date()` "
 execute: 
@@ -31,6 +32,8 @@ Geospatial analytics hold tremendous potential to address complex problems facin
 
 -   tidyverse
 
+-   funModelling
+
 -   spatstat
 
 -   raster
@@ -39,27 +42,7 @@ Geospatial analytics hold tremendous potential to address complex problems facin
 
 -   maptools
 
--   rgdal
-
--   kableExtra
-
--   plotly
-
--   ggthemes
-
--   onemapsapi
-
-## 2.2 Tidyverse Packages Used
-
-Moreover, the following tidyverse packages will be used:
-
--   readr for importing delimited files (.csv)
-
--   tidyr for manipulating and tidying data
-
--   dplyr for wrangling and transforming data
-
--   ggplot2 for visualising data
+-   sfdep
 
 # 3.0 Importing Data
 
@@ -131,7 +114,7 @@ Looking through the osunNGA dataframe, we can conclude that there are NO redunda
 
 ## 4.2 Checking For Duplicate Values In Columns
 
-It is always important to check for duplicate name in the data main data fields. Using duplicated() of Base R, we can flag out LGA names that might be duplicated as shown in the code chunk below.
+It is always important to check for duplicate name in the data main data fields. Using duplicated() of Base R, we can flag out duplicates.
 
 ```{r}
 osunNGA$ADM2_EN[duplicated(osunNGA$ADM2_EN)==TRUE]
@@ -214,7 +197,7 @@ freq(data = wp_unknown,
 
 # 6.0 Mapping Geospatial Datasets
 
-Now, we're importing more packages to create
+Now, we're importing more packages to create maps for visualisations.
 
 ```{r}
 pacman::p_load(maptools, raster, spatstat, tmap)
@@ -328,6 +311,8 @@ summary(wp_nonfunctional_spatial_ppp)
 
 ## 7.4 Handling Duplicated Points
 
+Now, we'll be checking for duplicates in both wp_functional_spatial_ppp and wp_nonfunctional_spatial_ppp objects. If duplicates are found, further processing is required.
+
 ```{r}
 any(duplicated(wp_functional_spatial_ppp))
 ```
@@ -335,6 +320,8 @@ any(duplicated(wp_functional_spatial_ppp))
 ```{r}
 any(duplicated(wp_nonfunctional_spatial_ppp))
 ```
+
+Great! No duplicates are found for both wp_functional_spatial_ppp and wp_nonfunctional_spatial_ppp objects!
 
 ## 7.5 Creating owin Object
 
@@ -378,15 +365,13 @@ summary(wp_nonfunctional_osun_ppp)
 
 # 8.0 First-order Spatial Point Patterns Analysis
 
-In this section, you will learn how to perform first-order SPPA by using spatstat package. The hands-on exercise will focus on:
+In this section, we will perform first-order SPPA by using spatstat package. We will focus on:
 
 -   deriving kernel density estimation (KDE) layer for visualising and exploring the intensity of point processes,
 
--   performing Confirmatory Spatial Point Patterns Analysis by using Nearest Neighbour statistics.
-
 ## 8.1 Kernel Density Estimation
 
-In this section, you will learn how to compute the kernel density estimation (KDE) of functional and non-functional waterpoints in Osun State.
+In this section, we will compute the kernel density estimation (KDE) of functional and non-functional waterpoints in Osun State.
 
 ### 8.1.1 Computing kernel density estimation using automatic bandwidth selection method
 
@@ -409,7 +394,7 @@ The plot() function of Base R is then used to display the kernel density derived
 plot(kde_functional_osun_bw)
 ```
 
-The density values of the output range from 0 to 0.000035 which is way too small to comprehend. This is because the default unit of measurement of svy21 is in meter. As a result, the density values computed is in "number of points per square meter".
+The density values of the output range is way too small to comprehend. This is because the default unit of measurement of svy21 is in meter. As a result, the density values computed is in "number of points per square meter".
 
 We're now computing the kernel density for the non-functional waterpoints in Osun state.
 
@@ -470,7 +455,7 @@ plot(kde_wp_nonfunctional_osun.bw)
 
 ### 8.2.1 Computing KDE using Fixed Bandwidth
 
-Next, you will compute a KDE layer by defining a bandwidth of 600 meter. Notice that in the code chunk below, the sigma value used is 0.6. This is because the unit of measurement of wp_functional_osun_ppp.km and wp_nonfunctional_osun_ppp.km objects is in kilometer, hence the 600m is 0.6km.
+Next, we will compute a KDE layer by defining a bandwidth of 600 meter. Notice that in the code chunk below, the sigma value used is 0.6. This is because the unit of measurement of wp_functional_osun_ppp.km and wp_nonfunctional_osun_ppp.km objects is in kilometer, hence the 600m is 0.6km.
 
 ```{r}
 kde_wp_functional_osun_600 <- density(wp_functional_osun_ppp.km, sigma=0.6, edge=TRUE, kernel="gaussian")
@@ -486,9 +471,9 @@ plot(kde_wp_nonfunctional_osun_600)
 
 ### 8.2.2 Computing KDE using Adaptive Bandwidth
 
-Fixed bandwidth method is very sensitive to highly skew distribution of spatial point patterns over geographical units for example urban versus rural. One way to overcome this problem is by using adaptive bandwidth instead.
+Fixed bandwidth method is very sensitive to highly skewed distribution of spatial point patterns over geographical units for example urban versus rural. One way to overcome this problem is by using adaptive bandwidth instead.
 
-In this section, you will learn how to derive adaptive kernel density estimation by using density.adaptive() of spatstat.
+In this section, we will learn to derive adaptive kernel density estimation by using density.adaptive() of spatstat.
 
 ```{r}
 kde_wp_functional_osun_adaptive <- adaptive.density(wp_functional_osun_ppp.km, method="kernel")
@@ -522,7 +507,7 @@ plot(kde_wp_nonfunctional_osun_adaptive, main = "Adaptive bandwidth NonFunc")
 
 ### 8.2.3 Converting KDE Output Into Grid Object
 
-The result is the same, we just convert it so that it is suitable for mapping purposes
+The result is the same, we just convert it so that it is suitable for mapping purposes.
 
 ```{r}
 gridded_kde_wp_functional_osun_bw <- as.SpatialGridDataFrame.im(kde_wp_functional_osun.bw)
@@ -790,9 +775,13 @@ wt <- st_kernel_weights(nb,
 
 ```
 
+We will now assign the A parameter a value. The A parameter is the target.
+
 ```{r}
 A <- wp_functional$status_clean
 ```
+
+B parameter is the neighbour we want to know if A is co-located with and if so, to what extent.
 
 ```{r}
 B <- wp_nonfunctional$status_clean
@@ -815,7 +804,7 @@ tm_shape(LCLQ_wp) +
           size = 0.01,
           border.col = "black",
           border.lwd = 0.5) + 
-  tm_view(set.zoom.limits = c(8,14))
+  tm_view(set.zoom.limits = c(9,16))
 ```
 
 ```{r}
@@ -827,7 +816,7 @@ tm_shape(LCLQ_wp) +
           size = 0.01,
           border.col = "black",
           border.lwd = 0.5) + 
-  tm_view(set.zoom.limits = c(8,14))
+  tm_view(set.zoom.limits = c(9,16))
 ```
 
 ```{r}
@@ -837,7 +826,6 @@ tmap_mode("plot")
 
 ## 12.2 Local Colocation Quotients (LCLQ) Statistical Conclusions
 
-The p-value is small (less than 0.05) for some regions in the map generated by p_sim_Non.Functional. This means that the actual colocation quotient is statistically significant. The spatial distribution of functional and non-functional waterpoints in Osun State, Nigeria is not independent from each other.
 
 We can tell that in some functional water point regions of Osun State, where the colocation quotient is \> 1 (as indicated by dark orange and red spots), we can see that there's a high likelihood that the non-functional water points exist nearby in the region.
 
@@ -847,7 +835,9 @@ For functional water point regions where colocation quotient is = 1 (as indicate
 
 We can see that non-functional water points aren't as prevalent as functional water points in Osun State.
 
-There are stronger signs of colocation between functional and non-functional waterpoints towards the leftmost and rightmost regions of Osun State. However for the majority of Osun State, the functional water points have no colocation with non-functional water points. As such, at 95% confidence level, there's not sufficient evidence to reject the null hypothesis which states that the spatial distribution of functional and non-functional waterpoints in Osun State, Nigeria are independent from each other.
+There are stronger signs of colocation between functional and non-functional waterpoints towards the leftmost and rightmost regions of Osun State. However for the majority of Osun State, the functional water points have no colocation with non-functional water points. 
+
+Moreover, there are not many regions on the map that shows a low p-value (smaller than 0.05). As such, at 95% confidence level, there's not sufficient evidence to reject the null hypothesis which states that the spatial distribution of functional and non-functional waterpoints in Osun State, Nigeria are independent from each other.
 
 We continue to conclude that the spatial distribution of functional and non-functional waterpoints in Osun State, Nigeria are independent from each other.
 
