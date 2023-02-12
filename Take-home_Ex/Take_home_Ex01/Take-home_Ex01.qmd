@@ -736,8 +736,6 @@ We will perform local colocation quotient analysis to determine if the spatial d
 
 In order to use the local_colocation(A, B, nb, wt, 49) function, we would need to gather the parameters first.
 
-To perform the analysis, we will need to bring back our functional and nonfunctional waterpoints in sf dataframe.
-
 To get the nb parameter value, we will need to get the sf dataframe of all waterpoints in Osun State, Nigeria.
 
 ```{r}
