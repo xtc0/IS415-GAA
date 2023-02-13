@@ -432,5 +432,47 @@
     "title": "Take-home Exercise 1",
     "section": "12.2 Local Colocation Quotients (LCLQ) Statistical Conclusions",
     "text": "12.2 Local Colocation Quotients (LCLQ) Statistical Conclusions\nWe can tell that in some functional water point regions of Osun State, where the colocation quotient is > 1 (as indicated by dark orange and red spots), we can see that there’s a high likelihood that the non-functional water points exist nearby in the region.\nFor functional water point regions where colocation quotient is < 1 (as indicated by colours lighter than light orange), we can see that there’s a low likelihood that non-functional water points exist nearby in the region.\nFor functional water point regions where colocation quotient is = 1 (as indicated by orange spots), we can see that there’s a good mix of both functional and non-functional water points in the region.\nWe can see that non-functional water points aren’t as prevalent as functional water points in Osun State.\nThere are stronger signs of colocation between functional and non-functional waterpoints towards the leftmost and rightmost regions of Osun State. However for the majority of Osun State, the functional water points have no colocation with non-functional water points.\nMoreover, there are NOT many regions on the map that shows a low p-value (smaller than 0.05). As such, at 95% confidence level, there’s not sufficient evidence to reject the null hypothesis which states that the spatial distribution of functional and non-functional waterpoints in Osun State, Nigeria are independent from each other.\nWe continue to conclude that the spatial distribution of functional and non-functional waterpoints in Osun State, Nigeria are independent from each other."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex06/In-class_Ex06.html",
+    "href": "In-class_Ex/In-class_Ex06/In-class_Ex06.html",
+    "title": "In-class Exercise 6",
+    "section": "",
+    "text": "In this hands-on exercise, you will learn how to compute spatial weights using R. By the end to this in-class exercise, you will be able to:\n\nimport geospatial data using appropriate function(s) of sf package,\nimport csv file using appropriate function of readr package,\nperform relational join using appropriate join function of dplyr package,\ncompute spatial weights using appropriate functions of spdep package, and\ncalculate spatially lagged variables using appropriate functions of spdep package."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex06/In-class_Ex06.html#importing-geospatial-data",
+    "href": "In-class_Ex/In-class_Ex06/In-class_Ex06.html#importing-geospatial-data",
+    "title": "In-class Exercise 6",
+    "section": "4.1 Importing Geospatial Data",
+    "text": "4.1 Importing Geospatial Data\nst_read() will make the data into sf format\n\nhunan <- st_read(dsn = \"data/geospatial\", \n                 layer = \"Hunan\")\n\nReading layer `Hunan' from data source \n  `/Users/yashica/Desktop/xtc0/IS415-GAA/In-class_Ex/In-class_Ex06/data/geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 88 features and 7 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 108.7831 ymin: 24.6342 xmax: 114.2544 ymax: 30.12812\nGeodetic CRS:  WGS 84\n\n\nYou might face an error if you didn’t click the earlier code chunk (packages) + all your environment variables are cleaned away. Happens coz st_read() cannot find the sf package and hence sf object.\nThis is a simple polygon geometry. How can we tell? Go to the “geometry” column aka sfc column. This is geographic coordinate system not projected coordinate system.\nNeed projected coordinate system to do distance-based metrics. As such, may need to do some conversion."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex06/In-class_Ex06.html#importing-aspatial-data",
+    "href": "In-class_Ex/In-class_Ex06/In-class_Ex06.html#importing-aspatial-data",
+    "title": "In-class Exercise 6",
+    "section": "4.2 Importing Aspatial Data",
+    "text": "4.2 Importing Aspatial Data\n\nhunan2012 <- read_csv(\"data/aspatial/Hunan_2012.csv\")\n\nAfter importing hunan2012 dataframe, we get it as a tibble dataframe not sf. It has no geometric aspect as a tibble dataframe.\nread_csv() is from readr, from a family of tidyverse. Even though we didn’t load readr in pacman, we got it when we downloaded tidyverse.\nMany variables aka columns but we’re only interested in a few like GDP."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex06/In-class_Ex06.html#plotting-choropleth-map",
+    "href": "In-class_Ex/In-class_Ex06/In-class_Ex06.html#plotting-choropleth-map",
+    "title": "In-class Exercise 6",
+    "section": "5.1 Plotting Choropleth Map",
+    "text": "5.1 Plotting Choropleth Map\n\ntmap_mode(\"plot\")\ntm_shape(hunan_GDPPC) +\n  tm_fill(\"GDPPC\", \n          style = \"quantile\",\n          palette = \"Blues\",\n          title = \"GDPPC\") + \n  \n  # tm_fill builds the polygon\n  \n  tm_layout(main.title = \"Distribution of GDP per capita by distribution\", \n            main.title.position = \"center\",\n            main.title.size = 1.2,\n            legend.height = 0.45,\n            legend.width = 0.35, \n            frame = TRUE) + \n  tm_borders(alpha = 0.5) + \n  tm_compass(type = \"8star\", size = 2) + \n  tm_scale_bar() + ## automatically changed to km (if tmap detects in decimal, it will change to km)\n  tm_grid(alpha = 0.2)\n\n\n\n\ntmap_mode we set to “plot” to keep it static. We can easily change it to “view” to get an interactive map instead.\ntm_field + tm_border will give you a polygon"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex06/In-class_Ex06.html#contiguity-neighbours-method",
+    "href": "In-class_Ex/In-class_Ex06/In-class_Ex06.html#contiguity-neighbours-method",
+    "title": "In-class Exercise 6",
+    "section": "6.1 Contiguity Neighbours Method",
+    "text": "6.1 Contiguity Neighbours Method\nIn the code chunk below, st_contiguity() is used to derive a contiguity neighbour list by using Queen’s method.\n\nhttps://sfdep.josiahparry.com/reference/st_contiguity.html for documentation\n\n\ncn_queen <- hunan_GDPPC %>%\n  mutate(nb = st_contiguity(geometry),\n         .before = 1)\n\n# nb is a list\n# results will be stored as sf dataframe\n# st_contiguity is performed on geometry column of hunan_GDPPC\n# .before = 1 to put the newly created column before the first original column in hunan_GDPPC\n\n\nUsing the steps learned, derive a contiguity neighbour list using Rook’s method.\n\ncn_queen will have 1 extra column more than hunan_GDPPC. You can see the corresponding neighbouring place under NAME_3 column in cn_queen.\n\ncn_rook <- hunan_GDPPC %>%\n  mutate(nb = st_contiguity(geometry),\n         queen = FALSE,\n         .before = 1)\n\n# if you want to use bishop, must use spdep package instead. Normally, we do not use bishop method."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex06/In-class_Ex06.html#computing-continguity-weights",
+    "href": "In-class_Ex/In-class_Ex06/In-class_Ex06.html#computing-continguity-weights",
+    "title": "In-class Exercise 6",
+    "section": "6.2 Computing Continguity Weights",
+    "text": "6.2 Computing Continguity Weights\n\n6.2.1 Contiguity Weights: Queen’s method\n\nwm_q <- hunan_GDPPC %>%\n  mutate(nb = st_contiguity(geometry),\n         wt = st_weights(nb),\n         .before = 1)\n\n# now I'll have 2 new columns nb and wt\n\n\n\n6.2.1 Contiguity Weights: Rook’s method"
   }
 ]
