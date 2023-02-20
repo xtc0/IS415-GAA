@@ -1,0 +1,305 @@
+---
+title: "In Class Exercise 7"
+---
+
+
+# 1.0 Overview
+
+In this hands-on exercise, you will learn how to compute spatial weights using R. By the end to this in-class exercise, you will be able to:
+
+- import geospatial data using appropriate function(s) of sf package,
+- import csv file using appropriate function of readr package,
+- perform relational join using appropriate join function of dplyr package,
+- compute spatial weights using appropriate functions of spdep package, and
+- calculate spatially lagged variables using appropriate functions of spdep package.
+
+# 2.0 Installing R Packages
+
+```{r}
+pacman::p_load(sf, sfdep, tmap, tidyverse)
+```
+
+# 3.0 The Data
+
+Two data sets will be used in this in-class exercise, they are:
+
+- Hunan county boundary layer. This is a geospatial data set in ESRI shapefile format.
+
+- Hunan_2012.csv: This csv file contains selected Hunan’s local development indicators in 2012.
+
+# 4.0 Importing Data
+
+## 4.1 Importing Geospatial Data
+
+st_read() will make the data into sf format
+
+```{r}
+hunan <- st_read(dsn = "data/geospatial", 
+                 layer = "Hunan")
+```
+You might face an error if you didn't click the earlier code chunk (packages) + all your environment variables are cleaned away. Happens coz st_read() cannot find the sf package and hence sf object.
+
+This is a simple polygon geometry. How can we tell? Go to the "geometry" column aka sfc column. This is geographic coordinate system not projected coordinate system. 
+
+Need projected coordinate system to do distance-based metrics. As such, may need to do some conversion.
+
+## 4.2 Importing Aspatial Data
+
+```{r}
+hunan2012 <- read_csv("data/aspatial/Hunan_2012.csv")
+```
+After importing hunan2012 dataframe, we get it as a tibble dataframe not sf. It has no geometric aspect as a tibble dataframe.
+
+read_csv() is from readr, from a family of tidyverse. Even though we didn't load readr in pacman, we got it when we downloaded tidyverse.
+
+Many variables aka columns but we're only interested in a few like GDP.
+
+# 5.0 Combine Both Dataframe Using Left Join
+
+Be careful, one is a sf dataframe and another one is a tibble dataframe. Tibble dataframe has no geometric aspect.
+
+When performing relational join, if you want to retain geometric column, left input should be the one with sf dataframe.
+
+Now, we'll be doing a left join function from dplyr (from tidyverse).
+
+```{r}
+hunan_GDPPC <- left_join(hunan, hunan2012) %>%
+  select(1:4, 7 ,15)
+
+# after combining the dataset, you use select() to choose the columns that you want
+# run the left_join first to see the combined dataset. Then from there you know what column names you want to keep and can easily use select()
+
+
+# in a typical join, you'll need to identify a common unique identifier 
+
+
+# but in this case, we did not do that
+# coz there's in-built intelligence - if it finds common column name in the 2 datasets, it will try to join.
+# you will get an error even if the column names are the same - if the length is diff and the values have different cases. 
+# left-join function is case sensitive
+
+
+#if there are no common column names in the dataset that you wish to left join, you will need to state the column names from each dataset
+```
+
+## 5.1 Plotting Choropleth Map
+
+```{r}
+tmap_mode("plot")
+tm_shape(hunan_GDPPC) +
+  tm_fill("GDPPC", 
+          style = "quantile",
+          palette = "Blues",
+          title = "GDPPC") + 
+  
+  # tm_fill builds the polygon
+  
+  tm_layout(main.title = "Distribution of GDP per capita by distribution", 
+            main.title.position = "center",
+            main.title.size = 1.2,
+            legend.height = 0.45,
+            legend.width = 0.35, 
+            frame = TRUE) + 
+  tm_borders(alpha = 0.5) + 
+  tm_compass(type = "8star", size = 2) + 
+  tm_scale_bar() + ## automatically changed to km (if tmap detects in decimal, it will change to km)
+  tm_grid(alpha = 0.2)
+```
+
+tmap_mode we set to "plot" to keep it static. We can easily change it to "view" to get an interactive map instead.
+
+tm_field + tm_border will give you a polygon
+
+# 6.0 Identify Neighbours Method
+
+## 6.1 Contiguity Neighbours Method
+
+In the code chunk below, st_contiguity() is used to derive a contiguity neighbour list by using Queen's method.
+
+> https://sfdep.josiahparry.com/reference/st_contiguity.html for documentation
+
+```{r}
+cn_queen <- hunan_GDPPC %>%
+  mutate(nb = st_contiguity(geometry),
+         .before = 1)
+
+# nb is a list
+# results will be stored as sf dataframe
+# st_contiguity is performed on geometry column of hunan_GDPPC
+# .before = 1 to put the newly created column before the first original column in hunan_GDPPC
+```
+
+> Using the  steps learned, derive a contiguity
+> neighbour list using Rook's method.
+ 
+cn_queen will have 1 extra column more than hunan_GDPPC. You can see the corresponding neighbouring place under NAME_3 column in cn_queen.
+
+```{r}
+cn_rook <- hunan_GDPPC %>%
+  mutate(nb = st_contiguity(geometry),
+         queen = FALSE,
+         .before = 1)
+
+# if you want to use bishop, must use spdep package instead. Normally, we do not use bishop method.
+```
+
+## 6.2 Computing Continguity Weights
+
+### 6.2.1 Contiguity Weights: Queen's method
+
+```{r}
+wm_q <- hunan_GDPPC %>%
+  mutate(nb = st_contiguity(geometry),
+         wt = st_weights(nb),
+         .before = 1)
+
+# now I'll have 2 new columns nb and wt
+```
+w is a row standardised metric. mutate() is a tidy way of doing it.
+
+# 7.0 Computing Global Moran'I
+
+```{r}
+moranI <- global_moran(wm_q$GDPPC,
+                       wm_q$nb,
+                       wm_q$wt)
+```
+
+## 7.1 Performing Global Moran'I Test
+
+```{r}
+global_moran_test(wm_q$GDPPC,
+                  wm_q$nb,
+                  wm_q$wt)
+```
+
+When we do a Global Moran'I test, you get the test result and test statistic. From the output, we can see that the p-value is way smaller than the xxx significance level. SO...
+
+The Moran I statistic > 0 so there's clustering.
+
+### 7.1.1 Performing Global Moran'I Permutation Test
+
+```{r}
+set.seed(1234)
+```
+
+Set the seed so that the permutation won't keep changing. If it involves simulations, please set seed.
+
+```{r}
+global_moran_perm(wm_q$GDPPC,
+                  wm_q$nb,
+                  wm_q$wt,
+                  nsim = 99)
+```
+Greater the number of simulations (nsim), the more stable.
+
+The 2 p-values (comparing against the previous cell), we can tell the p-values are almost the same. 
+
+### 7.1.2 Computing Local Moran's I
+
+```{r}
+lisa <- wm_q %>%
+  mutate(local_moran = local_moran(
+    GDPPC, nb, wt, nsim = 99),
+    .before = 1) %>%
+  unnest(local_moran)
+lisa
+```
+Need the unnest method - without it, there'll be error. Convert from list to sth else via unnest method. Need this for our use case coz we want to make a map.
+
+In the spdep steps for hands-on, there's no need to unnest after left-join. WHYY
+
+In hands-on exercise, spdep, you need to label. But for sfdep there's no need coz we it's automatically labelled when you click on the table on the upper right of the window.
+
+Use LISA's mean (from the column of the data table)
+
+```{r}
+tmap_mode("plot")
+tm_shape(lisa) + 
+  tm_fill("ii") +
+  tm_borders(alpha = 0.5) + 
+  tm_view(set.zoom.limits = c(6,8))
+```
+
+```{r}
+tmap_mode("plot")
+tm_shape(lisa) + 
+  tm_fill("p_ii") +
+  tm_borders(alpha = 0.5) 
+```
+
+p_ii is not the good one. p_ii_simulation is better. 
+
+### 7.1.3 Visualising Local Moran's I
+
+```{r}
+lisa_sig <- lisa %>%
+  filter(p_ii < 0.05)
+# first plot the grey output
+tmap_mode("plot")
+tm_shape(lisa) + 
+  tm_polygons() +
+  tm_borders(alpha = 0.5) + 
+# then plot the red and purple spots via the mean
+tm_shape(lisa_sig) + 
+  tm_fill("mean") +
+  tm_borders(alpha = 0.4)
+```
+
+Not a good code chunk. Please improve it - answer is found in the hands-on exercise. Instead of using Local Moran, use gi statistics or gstar for your Take-Home Exercise 2.
+
+# 8.0 Hot Spot and Cold Spot Analysis
+
+```{r}
+HCSA <- wm_q %>%
+  mutate(local_Gi = local_gstar_perm(
+    GDPPC, nb, wt, nsim=99),
+      .before=1) %>%
+  unnest(local_Gi)
+HCSA
+```
+Local G* : include itself, so ii != 0, no permutation
+Local G : exclude itself
+
+## 8.1.1 Visualising p-value of HCSA
+
+```{r}
+tmap_mode("plot")
+tm_shape(HCSA) +
+  tm_fill("p_sim") + 
+  tm_borders(alpha = 0.5)
+```
+
+```{r}
+GDPPC <- read_csv("data/aspatial/Hunan_GDPPC.csv")
+```
+
+# 9.0 Creating a Time Series Cube
+```{r}
+GDPPC_st <- spacetime(GDPPC, hunan,
+                      .loc_col = "County",
+                      .time_col = "Year")
+```
+
+
+GDPPC_nb <- GDPPC_st %>%
+  #activate() means gg to work on geometric table
+  activate("geometry") %>%
+  mutate(
+    nb = include_self(st_contiguity(geometry)),
+    wt = st_weights(nb)
+    # nb is neighbourhood list and wt is weight metric
+  ) %>%
+  set_nbs("nb") %>%
+  set_wts("wt")
+
+
+
+```{r}
+
+```
+
+
+
+
+
