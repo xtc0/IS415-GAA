@@ -437,13 +437,6 @@ jakarta_vac_points <- jakarta_vac_points %>%
     Sub_District=KELURAHAN,
     Target=SASARAN, 
     Unvaccinated=BELUM.VAKSIN
-    #Vaccinated_All=JUMLAH..DOSIS.1, 
-    #Vaccinated_Elderly=LANSIA..DOSIS.1,
-    #Vaccinated_Public_Servants=PELAYAN.PUBLIK..DOSIS.1,
-    #Vaccinated_Natural_Coop=GOTONG.ROYONG..DOSIS.1,
-    #Vaccinated_Health_Workers=TENAGA.KESEHATAN..DOSIS.1,
-    #Vaccinated_Stage3=TAHAPAN.3..DOSIS.1,
-    #Vaccinated_Teenagers=REMAJA..DOSIS.1
     )
 ```
 
@@ -514,7 +507,7 @@ That’s not quite right! There are still some ‘missing’ values, but we’ve
 
 ### 4.1.1 Identifying Mismatched Sub-District Records
 
-A brief comparison of the geospatial vs aspatial values reveals to us the mismatch: for the Sub_District field, there isn’t standardisation of the sub-district names, which leads to the same sub-district being referred to by slightly different names, such as KRAMAJATI vs KRAMAT JATI. This is why these records appear as ‘missing values’. To find all of these discrepancies, we should look for sub-district names that appear in our cases_jakarta that don’t appear in bd_jakarta, like so:
+A brief comparison of the geospatial vs aspatial values reveals to us the mismatch: for the Sub_District field, there isn’t standardisation of the sub-district names, which leads to the same sub-district being referred to by slightly different names, such as KRAMAJATI vs KRAMAT JATI. This is why these records appear as ‘missing values’. 
 
 ```{r}
 # checks for unique values of Sub_District
@@ -744,20 +737,11 @@ tm_shape(jakarta_renamed) +
 
 Generally across the months, the regions with the darkest colours and hence with the highest vaccination rates would be the South and East of Jakarta.
 
-Why are these places having the highest vaccination rates? Who are the major contributors?
-
 Let's first look for the City regions for the places with the greatest vaccination rate for a macroscopic view.
 
-```{r}
-#combined_jakarta$City[which.max(combined_jakarta$`Vaccinated`)]
+1) Vaccination rate of North Jakarta (blue) used to be high from July 2021 to December 2021. After which, the vaccination rate decreased. 
 
-#create a new column maybe for Vaccinated
-```
-
-1) Surprisingly, the greatest number of vaccinated people come from West Jakarta (the turquoise region from the map). However, from the choropleth maps, we can tell that the vaccination rates are low. Why? West Jakarta has the greatest number of people - out of which, a very large proportion of them are not vaccinated which causes the vaccination rate of West Jakarta to be low.
-
-2) Vaccination rate of North Jakarta (blue) used to be high from July 2021 to December 2021. After which, the vaccination rate decreased. Why? What event caused this? Who?
-Are we able to view the sub_districts from the map and see who's living there?
+2) October 2021 has the greatest number of regions in Jakarta with high vaccination rates. After doing a search online on the timeline of COVID 19 in Jakarta, the high vaccination rates in October 2021 proved to help Jakarta a lot in fighting the pandemic. On 31 October 2021, the number of recorded deceased patients was 17 - the lowest since 16 May 2020.
 
 ```{r}
 # to check for darkest sub-district in early stages
@@ -800,7 +784,7 @@ tm_shape(vaccination_rate)+
 tm_view(set.zoom.limits = c(11,16))
 ```
 
-From 31 October 2021 - 30 June 2022, a few sub-districts in the South of Jakarta have been consistently have high vaccination rates. These districts are: PONDOK LABU, JAGAKARSA, SRENGSENG SAWAH. 3 sub-districts from South Jakarta (located towards the centre of the map) are BUKIT DURI, TEBET BARAT, TEBET TIMUR. Another sub-district from East Jakarta that has been having consistently high vaccination rates over the months is: HALIM PERDANA KUSUMAH. Generally, sub-districts from the South and East of Jakarta tend to have high vaccination rates.
+From 31 October 2021 - 30 June 2022, a few sub-districts in the South of Jakarta have been consistently having high vaccination rates. These districts are: PONDOK LABU, JAGAKARSA, SRENGSENG SAWAH. 3 sub-districts from South Jakarta (located towards the centre of the map) are BUKIT DURI, TEBET BARAT, TEBET TIMUR. Another sub-district from East Jakarta that has been having consistently high vaccination rates over the months is: HALIM PERDANA KUSUMAH. Generally, sub-districts from the South and East of Jakarta tend to have high vaccination rates.
 
 Low-vaccination rate trend here...
 
@@ -892,8 +876,6 @@ tmap_arrange(break_plot(vaccination_rate, "2022-03-31"),
              break_plot(vaccination_rate, "2022-05-31"),
              break_plot(vaccination_rate, "2022-06-30"))
 ```
-
---> Can add gif here
 
 # 7.0 Local Gi* Analysis
 
@@ -1694,6 +1676,14 @@ tm_shape(ehsa_sig) +
 ```
 
 ## 8.3 Observations From Emerging Hot Spot Analysis (EHSA)
+
+- Oscillating hotspot is the most prevalent type of hotspot trend being detected throughout Jakarta. This means that generally throughout Jakarta, the regions that are currently considered as a statistically significant hotspot were once significant cold spots previously.Less than 90 percent of the time-step intervals have been statistically significant hot spots. This means that these places that currently have high vaccination rates had their moments of having low vaccination rates.
+
+- Another prevalent type of statistically significant region would be the sporadic coldspot which is more commonly found on the left part of Jakarta (more so in the East and West Jakarta). This means that the sub-districts with currently low vaccination rates have never had high vaccination rates before. These are the places that should more vaccines or campaigns to improve vaccination rates as they've never been high before.
+
+- The areas that are grey are statistically insignificant.
+
+
 
 
 
