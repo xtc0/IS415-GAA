@@ -1,0 +1,66 @@
+---
+title: "In-class Ex 8: Building Hedonic Pricing Model with GWR"
+---
+
+# 1.0 Overview
+
+Geographically weighted regression (GWR) is a spatial statistical technique that takes non-stationary variables into consideration (e.g., climate; demographic factors; physical environment characteristics) and models the local relationships between these independent variables and an outcome of interest (also known as dependent variable). In this hands-on exercise, you will learn how to build hedonic pricing models by using GWR methods. The dependent variable is the resale prices of condominium in 2015. The independent variables are divided into either structural and locational.
+
+# 2.0 Data
+
+Two data sets will be used in this model building exercise, they are:
+
+URA Master Plan subzone boundary in shapefile format (i.e. MP14_SUBZONE_WEB_PL)
+condo_resale_2015 in csv format (i.e. condo_resale_2015.csv)
+
+```{r}
+pacman::p_load(olsrr, ggpubr, sf, spdep, GWmodel, tmap, tidyverse, gtsummary)
+```
+
+```{r}
+mpsz = st_read(
+  dsn = "data/geospatial",
+  layer = "MP14_SUBZONE_WEB_PL"
+)
+```
+```{r}
+mpsz <- st_transform(mpsz, 3414)
+```
+
+```{r}
+st_crs(mpsz)
+```
+
+```{r}
+condo_resale = read_csv("data/aspatial/Condo_resale_2015.csv")
+```
+
+```{r}
+corrplot::corrplot(cor(condo_resale[, 5:23]), diag = FALSE, order = "AOE", t1.pos = "td", t1.cex = 0.5, method = "number", type = "upper")
+```
+
+```{r}
+summary(condo_resale)
+```
+
+To check if there are excessive number of 0s. (If min, max, quartiles are all 0 or if min, max, quartiles are all 5 - means that the data is monotonous which is bad) Check if the data has a good spread. 
+
+# Building a hedonic pricing model using multiple linear regression method
+
+# Calibrating Model
+
+When calibrating model, we're using GW model (aka geographically weighted)
+--> gw.robust regression model
+--> gw.scalable 
+
+These are from the package "GWmodel". Not just part of regression model, there are different functions to calibrate the regression model. There are also functions to calculate bandwidth. bw.gw VS bw.
+
+Need to calibrate model vs the predict the model.
+
+
+
+
+
+
+
+
