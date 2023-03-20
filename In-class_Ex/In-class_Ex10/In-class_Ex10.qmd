@@ -1,0 +1,221 @@
+---
+title: "In-class_Ex10"
+author: "Yashica"
+date: "20 March 2023"
+date-modified: " `r Sys.Date()` "
+execute: 
+  eval: true
+  echo: true
+  warning: false
+editor: visual
+---
+
+```{r}
+pacman::p_load(tmap, SpatialAcc, sf, 
+               ggstatsplot, reshape2, fca,
+               tidyverse)
+```
+Package fca is called floating catchment area.
+
+# Load Data
+
+```{r}
+mpsz <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_NO_SEA_PL")
+```
+
+```{r}
+hexagons <- st_read(dsn = "data/geospatial", layer = "hexagons") 
+```
+
+```{r}
+eldercare <- st_read(dsn = "data/geospatial", layer = "ELDERCARE") 
+```
+The report above shows that the R object used to contain the imported MP14_SUBZONE_WEB_PL shapefile is called mpsz and it is a simple feature object. The geometry type is multipolygon. it is also important to note that mpsz simple feature object does not have EPSG information.
+
+## Updating CRS Information
+
+```{r}
+mpsz <- st_transform(mpsz, 3414)
+eldercare <- st_transform(eldercare, 3414)
+hexagons <- st_transform(hexagons, 3414)
+```
+
+```{r}
+st_crs(mpsz)
+```
+
+Notice that the EPSG: is indicated as 3414 now.
+
+# Cleaning Geospatial Data
+
+There are many redundant fields in the data tables of both eldercare and hexagons. The code chunks below will be used to exclude those redundant fields. At the same time, a new field called demand and a new field called capacity will be added into the data table of hexagons and eldercare sf data frame respectively. Both fields are derive using mutate() of dplyr package.
+
+This is a lazy man way of doing things (fixing capacity at 100). Supposed to go to diff elderly home sites to check and assign the actual capacity.
+
+```{r}
+eldercare <- eldercare %>%
+  select(fid, ADDRESSPOS) %>%
+  mutate(capacity = 100)
+```
+
+We removed redundant data for the eldercare dataset. Now we only have relevant variables - destination_id, postal_code, geometry, capacity.
+
+```{r}
+hexagons <- hexagons %>%
+  select(fid) %>%
+  mutate(demand = 100)
+```
+
+For hexagon dataset, we have many useless variables like top, left, right, bottom. We only want useful one like fid. Hence the code only selected fid column.
+
+# Importing Aspatial Data
+
+```{r}
+ODMatrix <- read_csv("data/aspatial/OD_Matrix.csv", skip = 0)
+```
+The imported object is a tibble data.frame called ODMatrix.
+
+## Tidying Distance Matrix
+
+```{r}
+distmat <- ODMatrix %>%
+  select(origin_id, destination_id, total_cost) %>%
+  spread(destination_id, total_cost)%>%
+  select(c(-c('origin_id')))
+```
+
+```{r}
+distmat_km <- as.matrix(distmat/1000)
+```
+
+# Modelling and Visualising Accessibility using Hansen Method
+
+# Computing Distance Matrix (Optional)
+
+```{r}
+eldercare_coord <- st_coordinates(eldercare)
+hexagon_coord <- st_coordinates(hexagons)
+```
+
+```{r}
+EucMatrix <- SpatialAcc::distance(hexagon_coord,
+                                  eldercare_coord,
+                                  type = "euclidean")
+```
+
+Spatial distance function aka distance() of SpatialAcc -> has 2 inputs. The 3rd one is type = "euclidean".
+
+```{r}
+EucMatrix
+```
+
+```{r}
+EucMatrix_km <- as.matrix(EucMatrix/1000)
+```
+coz matrix's results (Euclean distance) were in metres. We did this step to get km instead.
+
+## Computing Hansen's Accessibility
+Now, we ready to compute Hansen’s accessibility by using ac() of SpatialAcc package. Before getting started, you are encourage to read the arguments of the function at least once in order to ensure that the required inputs are available.
+
+```{r}
+acc_Hansen <- data.frame(ac(hexagons$demand,
+                            eldercare$capacity,
+                            distmat_km, 
+                            #d0 = 50,
+                            power = 2, 
+                            family = "Hansen"))
+```
+acc function needs 4 main inputs that we already have. d0 is the threshold. Family = "Hansen" --> the index that you want. Convert everythign to dataframe so you can map to hexagon layer to do further mapping.
+
+acc_Hansen's field name is very long. Advisable to rename.
+
+```{r}
+colnames(acc_Hansen) <- "accHansen"
+```
+Can straightaway just use colnames like this w/o specifying exact column name coz there's only 1 column in dataset.
+
+```{r}
+acc_Hansen
+```
+
+```{R}
+acc_Hansen <- as_tibble(acc_Hansen)
+acc_Hansen
+```
+As of now, here's no joint column in our acc_Hansen TIBBLE dataframe.
+
+```{R}
+hexagon_Hansen <- bind_cols(hexagons, acc_Hansen)
+hexagon_Hansen
+```
+Lastly, bind_cols() of dplyr will be used to join the acc_Hansen tibble data frame with the hexagons simple feature data frame. The output is called hexagon_Hansen.
+
+Notice that hexagon_Hansen is a simple feature data frame and not a typical tibble data frame.
+
+# Visualising Hansen's Accessibility
+
+## Extracting map extend
+Firstly, we will extract the extend of hexagons simple feature data frame by by using st_bbox() of sf package.
+
+```{r}
+mapex <- st_bbox(hexagons)
+```
+
+The code chunk below uses a collection of mapping fucntions of tmap package to create a high cartographic quality accessibility to eldercare centre in Singapore.
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_Hansen,
+         bbox = mapex) + 
+  tm_fill(col = "accHansen",
+          n = 10,
+          style = "quantile",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(eldercare) +
+  tm_symbols(size = 0.1) +
+  tm_layout(main.title = "Accessibility to eldercare: Hansen method",
+            main.title.position = "center",
+            main.title.size = 2,
+            legend.outside = FALSE,
+            legend.height = 0.45, #height of legend
+            legend.width = 3.0,
+            legend.format = list(digits = 6),
+            legend.position = c("right", "top"), #have 3 possible spots to place the legend but we specify where we want the legend to go
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) + #8star refers to the type of compass used can check tmap documentation
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+# Statistical Graphic Visualisation
+
+```{r}
+hexagon_Hansen <- st_join(hexagon_Hansen, mpsz, 
+                          join = st_intersects)
+```
+
+```{r}
+hexagon_Hansen
+```
+
+Next, ggplot() will be used to plot the distribution by using boxplot graphical method.
+
+```{r}
+ggplot(data=hexagon_Hansen, 
+       aes(y = log(accHansen), 
+           x= REGION_N)) +
+  geom_boxplot() +
+  geom_point(stat="summary", 
+             fun.y="mean", 
+             colour ="red", 
+             size=2)
+```
+
+
+
+
+
+
+
+
