@@ -440,7 +440,8 @@ chas_sf
 
 ### 3.1.1 Verifying Coordinate System
 
-#### 3.1.1.1 sg_area
+::: panel-tabset
+## sg_area
 
 Though projected coordinate system is used, let's assign a specific a CRS (Singapore) for our use case.
 
@@ -456,15 +457,14 @@ CRS value of 3414 has been properly assigned!
 
 Checking how the geospatial data we've just imported looks like geometrically. It does resemble Singapore's map quite closely!
 
-#### 3.1.1.2 childcare_sf
+## childcare_sf
 
 ```{r}
 st_crs(childcare_sf)
 ```
-
 In correct Project Coordinated System format (Singapore)! No transformation needed!
 
-#### 3.1.1.3 eldercare_sf
+## eldercare_sf
 
 ```{r}
 st_crs(eldercare_sf)
@@ -481,7 +481,7 @@ eldercare_sf
 st_crs(eldercare_sf)
 ```
 
-#### 3.1.1.3 busstop_sf
+## busstop_sf
 
 ```{r}
 st_crs(busstop_sf)
@@ -492,7 +492,7 @@ busstop_sf <- busstop_sf  %>% st_transform(crs = 3414)
 busstop_sf
 ```
 
-#### 3.1.1.5 primaryschools_sf
+## primaryschools_sf
 
 ```{r}
 st_crs(primaryschools_sf)
@@ -507,7 +507,8 @@ primaryschools_sf
 st_crs(primaryschools_sf)
 ```
 
-#### 3.1.1.6 mrt_sf
+
+## mrt_sf
 
 ```{r}
 st_crs(mrt_sf)
@@ -524,7 +525,8 @@ mrt_sf
 st_crs(mrt_sf)
 ```
 
-#### 3.1.1.7 kindergarten_sf
+
+## kindergarten_sf
 
 ```{r}
 st_crs(kindergarten_sf)
@@ -541,7 +543,7 @@ kindergarten_sf
 st_crs(kindergarten_sf)
 ```
 
-#### 3.1.1.8 hawkercentre_sf
+## hawkercentre_sf
 
 ```{r}
 st_crs(hawkercentre_sf)
@@ -556,7 +558,7 @@ hawkercentre_sf
 st_crs(hawkercentre_sf)
 ```
 
-#### 3.1.1.9 nationalparks_sf
+## nationalparks_sf
 
 ```{r}
 st_crs(nationalparks_sf)
@@ -571,7 +573,7 @@ nationalparks_sf
 st_crs(nationalparks_sf)
 ```
 
-#### 3.1.1.10 supermarkets_sf
+## supermarkets_sf
 
 ```{r}
 st_crs(supermarkets_sf)
@@ -586,13 +588,15 @@ supermarkets_sf
 st_crs(supermarkets_sf)
 ```
 
-#### 3.1.1.11 topprimary_sf
+
+## topprimary_sf
 
 ```{r}
 st_crs(topprimary_sf)
 ```
 
-#### 3.1.1.12 mall_coordinates_sf
+
+## mall_coordinates_sf
 
 ```{r}
 st_crs(mall_coordinates_sf)
@@ -602,7 +606,8 @@ st_crs(mall_coordinates_sf)
 plot(st_geometry(sg_area))
 ```
 
-#### 3.1.1.13 cbd_coords_sf
+
+## cbd_coords_sf
 
 ```{r}
 st_crs(cbd_coords_sf)
@@ -612,7 +617,8 @@ st_crs(cbd_coords_sf)
 cbd_coords_sf
 ```
 
-#### 3.1.1.14 chas_sf
+
+## chas_sf
 
 ```{r}
 st_crs(chas_sf)
@@ -622,10 +628,12 @@ st_crs(chas_sf)
 chas_sf <- chas_sf %>% st_transform(crs = 3414)
 chas_sf
 ```
+:::
 
 ### 3.1.2 Checking For Invalid Geometries
 
-#### 3.1.2.1 sg_area
+::: panel-tabset
+## sg_area
 
 ```{r}
 length(which(st_is_valid(sg_area) == FALSE))
@@ -644,87 +652,92 @@ length(which(st_is_valid(sg_area) == FALSE))
 
 Now, all the 9 rows have been successfully dropped.
 
-#### 3.1.2.2 childcare_sf
+## childcare_sf
 
 ```{r}
 length(which(st_is_valid(childcare_sf) == FALSE))
 ```
 
-#### 3.1.2.3 eldercare_sf
+
+## eldercare_sf
 
 ```{r}
 length(which(st_is_valid(eldercare_sf) == FALSE))
 ```
 
-#### 3.1.2.4 busstop_sf
+## busstop_sf
 
 ```{r}
 length(which(st_is_valid(busstop_sf) == FALSE))
 ```
 
-#### 3.1.2.5 primaryschools_sf
+
+## primaryschools_sf
 
 ```{r}
 length(which(st_is_valid(primaryschools_sf) == FALSE))
 ```
 
-#### 3.1.2.6 mrt_sf
+## mrt_sf
 
 ```{r}
 length(which(st_is_valid(mrt_sf) == FALSE))
 ```
 
-#### 3.1.2.7 kindergarten_sf
+## kindergarten_sf
 
 ```{r}
 length(which(st_is_valid(kindergarten_sf) == FALSE))
 ```
 
-#### 3.1.2.8 hawkercentre_sf
+## hawkercentre_sf
 
 ```{r}
 length(which(st_is_valid(hawkercentre_sf) == FALSE))
 ```
 
-#### 3.1.2.9 nationalparks_sf
+## nationalparks_sf
 
 ```{r}
 length(which(st_is_valid(nationalparks_sf ) == FALSE))
 ```
 
-#### 3.1.2.10 supermarkets_sf
+## supermarkets_sf
 
 ```{r}
 length(which(st_is_valid(supermarkets_sf ) == FALSE))
 ```
 
-#### 3.1.2.11 topprimary_sf
+## topprimary_sf
 
 ```{r}
 length(which(st_is_valid(topprimary_sf) == FALSE))
 ```
 
-#### 3.1.2.12 mall_coordinates_sf
+## mall_coordinates_sf
 
 ```{r}
 length(which(st_is_valid(mall_coordinates_sf) == FALSE))
 ```
 
-#### 3.1.2.13 cbd_coords_sf
+## cbd_coords_sf
 
 ```{r}
 length(which(st_is_valid(cbd_coords_sf) == FALSE))
 ```
 
-#### 3.1.2.14 chas_sf
+## chas_sf
 
 ```{r}
 length(which(st_is_valid(chas_sf) == FALSE))
 ```
 
+:::
+
 ### 3.1.3 Checking For Missing Values
 
-#### 3.1.3.1 sg_area
+::: panel-tabset
+## sg_area
 
 Let's check for missing rows.
 
@@ -734,13 +747,13 @@ sg_area[rowSums(is.na(sg_area))!=0,]
 
 Looks like there are no missing rows!
 
-#### 3.1.3.2 childcare_sf
+## childcare_sf
 
 ```{r}
 childcare_sf[rowSums(is.na(childcare_sf))!=0,]
 ```
 
-#### 3.1.3.3 eldercare_sf
+## eldercare_sf
 
 ```{r}
 eldercare_sf[rowSums(is.na(eldercare_sf))!=0,]
@@ -756,19 +769,19 @@ eldercare_sf <- eldercare_sf %>% select(4,5,11,17,18,19)
 eldercare_sf[rowSums(is.na(eldercare_sf))!=0,]
 ```
 
-#### 3.1.3.5 primaryschools_sf
+## primaryschools_sf
 
 ```{r}
 primaryschools_sf[rowSums(is.na(primaryschools_sf))!=0,]
 ```
 
-#### 3.1.3.6 mrt_sf
+## mrt_sf
 
 ```{r}
 mrt_sf[rowSums(is.na(mrt_sf))!=0,]
 ```
 
-#### 3.1.2.7 kindergarten_sf
+## kindergarten_sf
 
 ```{r}
 kindergarten_sf[rowSums(is.na(kindergarten_sf))!=0,]
@@ -783,7 +796,7 @@ kindergarten_sf
 kindergarten_sf[rowSums(is.na(kindergarten_sf))!=0,]
 ```
 
-#### 3.1.2.8 hawkercentre_sf
+## hawkercentre_sf
 
 ```{r}
 hawkercentre_sf[rowSums(is.na(hawkercentre_sf))!=0,]
@@ -803,7 +816,7 @@ hawkercentre_sf
 hawkercentre_sf[rowSums(is.na(hawkercentre_sf))!=0,]
 ```
 
-#### 3.1.2.9 nationalparks_sf
+## nationalparks_sf
 
 ```{r}
 nationalparks_sf [rowSums(is.na(nationalparks_sf ))!=0,]
@@ -818,7 +831,7 @@ nationalparks_sf
 nationalparks_sf [rowSums(is.na(nationalparks_sf ))!=0,]
 ```
 
-#### 3.1.2.10 supermarkets_sf
+## supermarkets_sf
 
 ```{r}
 supermarkets_sf[rowSums(is.na(supermarkets_sf ))!=0,]
@@ -835,29 +848,30 @@ supermarkets_sf
 supermarkets_sf[rowSums(is.na(supermarkets_sf ))!=0,]
 ```
 
-#### 3.1.2.11 topprimary_sf
+## topprimary_sf
 
 ```{r}
 topprimary_sf[rowSums(is.na(topprimary_sf ))!=0,]
 ```
 
-#### 3.1.2.12 mall_coordinates_sf
+## mall_coordinates_sf
 
 ```{r}
 mall_coordinates_sf[rowSums(is.na(mall_coordinates_sf))!=0,]
 ```
 
-#### 3.1.2.13 cbd_coords_sf
+## cbd_coords_sf
 
 ```{r}
 cbd_coords_sf[rowSums(is.na(cbd_coords_sf))!=0,]
 ```
 
-#### 3.1.2.14 chas_sf
+## chas_sf
 
 ```{r}
 chas_sf[rowSums(is.na(chas_sf))!=0,]
 ```
+:::
 
 # 4.0 Importing Aspatial Data
 
