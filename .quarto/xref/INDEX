@@ -73,5 +73,26 @@
   },
   "In-class_Ex/In-class_Ex10/data/geospatial/hexagons.qmd": {
     "hexagons.html": "79df3890"
+  },
+  "Take-home_Ex/Take_home_Ex03/data/geospatial/data_extracted/mpsz/MPSZ-2019.qmd": {
+    "MPSZ-2019.html": "211cf628"
+  },
+  "Take-home_Ex/Take_home_Ex03/data/geospatial/data_extracted/childcare/ChildcareServices.qmd": {
+    "ChildcareServices.html": "e8c9c213"
+  },
+  "Take-home_Ex/Take_home_Ex03/data/geospatial/data_extracted/singapore/Singapore_POIS.qmd": {
+    "Singapore_POIS.html": "38239356"
+  },
+  "Take-home_Ex/Take_home_Ex03/data/geospatial/data_extracted/offices/Offices.qmd": {
+    "Offices.html": "6314ca16"
+  },
+  "Take-home_Ex/Take_home_Ex03/Take-home_Ex03.Rmd": {
+    "Take-home_Ex03.html": "78826ddc"
+  },
+  "Take-home_Ex/Take_home_Ex03/Take-homez.Rmd": {
+    "Take-homez.html": "74639cb9"
+  },
+  "Take-home_Ex/Take_home_Ex03/test.Rmd": {
+    "test.html": "33e4d99a"
   }
 }
